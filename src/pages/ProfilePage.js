@@ -21,8 +21,6 @@ function ProfilePage({ history }) {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  // let { loginUser } = useContext(AuthContext);
-
   useEffect(() => {
     if (!user || !user.name) {
       dispatch(getUserDetails("profile"));

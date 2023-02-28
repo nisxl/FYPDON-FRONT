@@ -5,3 +5,7 @@
 * {
   font-family: Poppins;
 }
+
+.offcanvas-width {
+  width: 900px; /* or any desired width */
+}
