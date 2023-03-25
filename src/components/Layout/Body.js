@@ -10,24 +10,20 @@ import Testimonial from "./Testimonial";
 import { useCart } from "../../context/CartContext";
 import ShoppingCart from "../Cart/shoppingCart";
 import { Button, Divider, notification, Space } from "antd";
-import axios from "axios";
-import Notification from "../UI/Notification";
 import { useState, useEffect } from "react";
-
-
-
+import { useDispatch, useSelector } from "react-redux";
+import { listProducts } from "../../actions/productActions";
+import Loader from "../UI/Loader";
+import Message from "../UI/Message";
 function Body() {
-  
-
   const { openCart, cartQuantity } = useCart();
-  const { setProducts, products } = useCart();
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.productList);
+  const { error, loading, products } = productList;
   useEffect(() => {
-    async function fetchProducts() {
-      const { data } = await axios.get("/api/products/");
-      setProducts(data);
-    }
-    fetchProducts();
-  }, []);
+    dispatch(listProducts());
+  }, [dispatch]);
+
   const bestSeller = products.map((item) => {
     return <BestSelling key={item._id} {...item} />;
   });
@@ -43,10 +39,9 @@ function Body() {
           nischal
         </p>
       </Link> */}
-      <Button onClick={() => setNischal(!nischal)}></Button>
-      {nischal && <Notification />}
+
       <div
-        className="bg-slate-50 flex justify-between 
+        className="bg-slate-50 flex justify-between sticky top-0
           items-center h-[64px]"
       >
         <div>
@@ -100,8 +95,13 @@ function Body() {
             bread and other creations.{" "}
           </p>
         </div>
-
-        <div className="flex flex-wrap px-[90px] gap-12">{bestSeller}</div>
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Message variant="danger">{error}</Message>
+        ) : (
+          <div className="flex flex-wrap px-[90px] gap-12">{bestSeller}</div>
+        )}
       </section>
       <section className="flex flex-col items-center">
         <Button

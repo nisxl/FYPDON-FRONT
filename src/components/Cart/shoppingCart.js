@@ -1,13 +1,20 @@
 import { useCart } from "../../context/CartContext";
 import { Button } from "react-bootstrap";
-
+import { useEffect } from "react";
 import { Offcanvas, Stack } from "react-bootstrap";
 import CartItem from "./cartItem";
 import storeItems from "../../data/items.json";
-
+import { useDispatch, useSelector } from "react-redux";
+import { listProducts } from "../../actions/productActions";
+import { Link } from "react-router-dom";
 const ShoppingCart = ({ isOpen }) => {
   const { closeCart, cartItems, cartQuantity } = useCart();
-
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.productList);
+  const { error, loading, products } = productList;
+  useEffect(() => {
+    dispatch(listProducts());
+  }, [dispatch]);
   return (
     <div className="">
       <Offcanvas
@@ -34,7 +41,7 @@ const ShoppingCart = ({ isOpen }) => {
                 <span>Sub Total </span>
                 <span>
                   {cartItems.reduce((total, cartItem) => {
-                    const item = storeItems.find((i) => i.id === cartItem.id);
+                    const item = products.find((i) => i._id === cartItem.id);
                     return total + (item?.price || 0) * cartItem.quantity;
                   }, 0)}
                 </span>
@@ -46,9 +53,16 @@ const ShoppingCart = ({ isOpen }) => {
                 >
                   Continue Shopping
                 </div>
-                <div className="bg-[#4A1D1F] rounded-full py-[6px] px-4 text-white cursor-pointer">
-                  Check Out
-                </div>
+
+                <Link to={`/checkout`}>
+                  {/* <Link to="/product" state={{ id: props.key }}> */}{" "}
+                  <div
+                    onClick={closeCart}
+                    className="bg-[#4A1D1F] rounded-full py-[6px] px-4 text-white cursor-pointer"
+                  >
+                    Check Out
+                  </div>
+                </Link>
               </div>
             </div>
           </Stack>

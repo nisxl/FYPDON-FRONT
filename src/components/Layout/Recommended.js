@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { Button } from "antd";
 import { useCart } from "../../context/CartContext";
 import "react-toastify/dist/ReactToastify.css";
+import { SEED } from "../../env";
 
 function Recommended({ _id, name, price, image, rating }) {
   const {
@@ -24,7 +25,7 @@ function Recommended({ _id, name, price, image, rating }) {
         <Link to={`/product/${_id}`} state={{ id: _id }}>
           {/* <Link to="/product" state={{ id: id }}> */}{" "}
           <img
-            src={`../../images/${image}`}
+            src={`${SEED}${image}`}
             className="w-[180px] h-[210px] rounded-lg cursor-pointer"
           />
         </Link>

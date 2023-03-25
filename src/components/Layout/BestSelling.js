@@ -1,11 +1,10 @@
 import React, { useContext, useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Divider, notification, Space } from "antd";
-
 import storeItems from "../../data/items.json";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
-import SEED from "../../env";
+import { SEED } from "../../env";
 
 const Context = React.createContext({
   name: "Default",

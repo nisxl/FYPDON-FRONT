@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Stack } from "react-bootstrap";
 import { useCart } from "../../context/CartContext";
 import { RiDeleteBin4Fill } from "react-icons/ri";
 import storeItems from "../../data/items.json";
+import { SEED } from "../../env";
+
+import { useDispatch, useSelector } from "react-redux";
+import { listProducts } from "../../actions/productActions";
 
 function CartItem({ id, quantity }) {
   const { removeFromCart, increaseCartQuantity, decreaseCartQuantity } =
     useCart();
-  const item = storeItems.find((i) => i.id === id);
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.productList);
+  const { error, loading, products } = productList;
+  useEffect(() => {
+    dispatch(listProducts());
+  }, [dispatch]);
+
+  const item = products.find((i) => i._id === id);
   if (item == null) return null;
   return (
     <Stack
@@ -16,7 +27,7 @@ function CartItem({ id, quantity }) {
       className="flex pb-3  border-b border-[#4A1D1F] justify-center items-center"
     >
       <img
-        src={`../../images/${item.image}`}
+        src={`${SEED}${item.image}`}
         className="w-[82px] h-[102px] object-cover"
       />
       <div className="flex gap-4 flex-col">

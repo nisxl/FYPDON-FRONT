@@ -1,8 +1,10 @@
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import ShoppingCart from "../components/Cart/shoppingCart";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch, useSelector } from "react-redux";
+import { listProducts } from "../actions/productActions";
 
 const CartContext = createContext({});
 
@@ -12,6 +14,13 @@ export function useCart() {
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useLocalStorage("shopping-cart", []);
+  const dispatch = useDispatch();
+  const productList = useSelector((state) => state.productList);
+  const { error, loading, products } = productList;
+  useEffect(() => {
+    dispatch(listProducts());
+  }, [dispatch]);
+
   const [isOpen, setIsOpen] = useState(false);
   const cartQuantity = cartItems.reduce(
     (quantity, item) => item.quantity + quantity,
@@ -21,7 +30,7 @@ export function CartProvider({ children }) {
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
 
-  const [products, setProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
 
   function getItemQuantity(id) {
     return cartItems.find((item) => item.id === id)?.quantity || 0;
@@ -78,7 +87,7 @@ export function CartProvider({ children }) {
         cartQuantity,
         openCart,
         closeCart,
-        setProducts,
+        // setProducts,
         products,
       }}
     >
