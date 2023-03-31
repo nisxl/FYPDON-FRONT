@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../actions/userAction";
+import { register } from "../actions/userActions";
 
 const RegisterPage = (location) => {
   const [name, setName] = useState("");

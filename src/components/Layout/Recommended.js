@@ -41,17 +41,27 @@ function Recommended({ _id, name, price, image, rating }) {
         <div className="flex self-center gap-2 mb-3 mt-[20px]">
           {rat.map((item, i) => {
             return item <= Math.floor(rating) ? (
-              <img src="../../images/star.png" className="h-[19px] w-[19px]" />
+              <img
+                key={item}
+                src="../../images/star.png"
+                className="h-[19px] w-[19px]"
+              />
             ) : (Math.abs(rating - item) > 0.25) &
               (Math.abs(rating - item) < 0.76) ? (
               <img
+                key={item}
                 src="../../images/starHalf.png"
                 className="h-[19px] w-[19px]"
               />
             ) : Math.abs(item - rating) < 0.25 ? (
-              <img src="../../images/star.png" className="h-[19px] w-[19px]" />
+              <img
+                key={item}
+                src="../../images/star.png"
+                className="h-[19px] w-[19px]"
+              />
             ) : (
               <img
+                key={item}
                 src="../../images/starEmpty.png"
                 className="h-[19px] w-[19px]"
               />

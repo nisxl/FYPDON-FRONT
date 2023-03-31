@@ -1,5 +1,6 @@
 import { useCart } from "../../context/CartContext";
 import { Button } from "react-bootstrap";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Offcanvas, Stack } from "react-bootstrap";
 import CartItem from "./cartItem";
@@ -7,7 +8,14 @@ import storeItems from "../../data/items.json";
 import { useDispatch, useSelector } from "react-redux";
 import { listProducts } from "../../actions/productActions";
 import { Link } from "react-router-dom";
-const ShoppingCart = ({ isOpen }) => {
+import { addToCart } from "../../actions/cartActions";
+function ShoppingCart({ isOpen }) {
+  const { id } = useParams();
+  const productId = parseInt(id);
+  const location = useLocation();
+
+  const qty = location.search ? location.search.split("=") : 1;
+
   const { closeCart, cartItems, cartQuantity } = useCart();
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
@@ -33,17 +41,17 @@ const ShoppingCart = ({ isOpen }) => {
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Stack gap={3}>
-            {cartItems.map((item) => (
-              <CartItem key={item.id} {...item} />
+            {cartItems.map((item, index) => (
+              <CartItem key={index} {...item} />
             ))}
             <div className="flex flex-col gap-3 ">
               <div className="px-3 flex justify-between text-[#4A1D1F] font-mono">
                 <span>Sub Total </span>
                 <span>
-                  {cartItems.reduce((total, cartItem) => {
+                  {/* {cartItems.reduce((total, cartItem) => {
                     const item = products.find((i) => i._id === cartItem.id);
                     return total + (item?.price || 0) * cartItem.quantity;
-                  }, 0)}
+                  }, 0)} */}
                 </span>
               </div>
               <div className="px-[16px] flex justify-between">
@@ -54,7 +62,7 @@ const ShoppingCart = ({ isOpen }) => {
                   Continue Shopping
                 </div>
 
-                <Link to={`/checkout`}>
+                <Link to={`/cart`}>
                   {/* <Link to="/product" state={{ id: props.key }}> */}{" "}
                   <div
                     onClick={closeCart}
@@ -70,5 +78,5 @@ const ShoppingCart = ({ isOpen }) => {
       </Offcanvas>
     </div>
   );
-};
+}
 export default ShoppingCart;

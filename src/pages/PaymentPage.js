@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Form, Col } from "react-bootstrap";
 import CheckoutSteps from "../components/Layout/CheckoutSteps";
 import { useNavigate } from "react-router-dom";
-import { savePaymentMethod } from "../actions/cartAction";
+import { savePaymentMethod } from "../actions/cartActions";
 function PaymentPage() {
   let navigate = useNavigate();
-  const cart = useSelector((state) => state.shippingDetails);
+  const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
 
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ function PaymentPage() {
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(savePaymentMethod(paymentMethod));
-    navigate("/order");
+    navigate("/placeorder");
   };
   return (
     <div>

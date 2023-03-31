@@ -3,7 +3,7 @@ import { FaRegUser } from "react-icons/fa";
 import { BsCartCheck } from "react-icons/bs";
 import storeItems from "../../data/items.json";
 import { AiOutlineArrowRight } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import BestSelling from "./BestSelling";
 import Recommended from "./Recommended";
 import Testimonial from "./Testimonial";
@@ -13,23 +13,31 @@ import { Button, Divider, notification, Space } from "antd";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listProducts } from "../../actions/productActions";
+
+import ProductCarousel from "./ProductCarousel";
+
 import Loader from "../UI/Loader";
+
 import Message from "../UI/Message";
+import Paginate from "../UI/Paginate";
 function Body() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { openCart, cartQuantity } = useCart();
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
-  const { error, loading, products } = productList;
-  useEffect(() => {
-    dispatch(listProducts());
-  }, [dispatch]);
+  const { error, loading, products, page, pages } = productList;
 
-  const bestSeller = products.map((item) => {
-    return <BestSelling key={item._id} {...item} />;
+  let keyword = location.search;
+  useEffect(() => {
+    dispatch(listProducts(keyword));
+  }, [dispatch, keyword]);
+
+  const bestSeller = products.map((item, index) => {
+    return <BestSelling key={index} {...item} />;
   });
-  const [nischal, setNischal] = useState(false);
-  const recommended = products.map((item) => {
-    return <Recommended key={item._id} {...item} />;
+  const recommended = products.map((item, index) => {
+    return <Recommended key={index} {...item} />;
   });
   return (
     //nav bar
@@ -39,6 +47,7 @@ function Body() {
           nischal
         </p>
       </Link> */}
+      {!keyword && <ProductCarousel />}
 
       <div
         className="bg-slate-50 flex justify-between sticky top-0
@@ -100,7 +109,10 @@ function Body() {
         ) : error ? (
           <Message variant="danger">{error}</Message>
         ) : (
-          <div className="flex flex-wrap px-[90px] gap-12">{bestSeller}</div>
+          <div className="flex flex-wrap px-[90px] gap-12">
+            {bestSeller}
+            <Paginate page={page} pages={pages} keyword={keyword} />
+          </div>
         )}
       </section>
       <section className="flex flex-col items-center">

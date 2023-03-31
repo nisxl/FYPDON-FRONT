@@ -14,12 +14,12 @@ export function useCart() {
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useLocalStorage("shopping-cart", []);
-  const dispatch = useDispatch();
-  const productList = useSelector((state) => state.productList);
-  const { error, loading, products } = productList;
-  useEffect(() => {
-    dispatch(listProducts());
-  }, [dispatch]);
+  // const dispatch = useDispatch();
+  // const productList = useSelector((state) => state.productList);
+  // const { error, loading, products } = productList;
+  // useEffect(() => {
+  //   dispatch(listProducts());
+  // }, [dispatch]);
 
   const [isOpen, setIsOpen] = useState(false);
   const cartQuantity = cartItems.reduce(
@@ -88,7 +88,7 @@ export function CartProvider({ children }) {
         openCart,
         closeCart,
         // setProducts,
-        products,
+        // products,
       }}
     >
       {children}

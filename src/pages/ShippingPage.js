@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Form } from "react-bootstrap";
-import { saveShippingAddress } from "../actions/cartAction";
+import { saveShippingAddress } from "../actions/cartActions";
 import CheckoutSteps from "../components/Layout/CheckoutSteps";
 import { Link, useNavigate } from "react-router-dom";
 function ShippingPage() {
-  const cart = useSelector((state) => state.shippingDetails);
+  const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
   let navigate = useNavigate();
 

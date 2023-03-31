@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../actions/userAction";
+import { login } from "../actions/userActions";
 
 const LoginPage = (location) => {
   const [email, setEmail] = useState("");
