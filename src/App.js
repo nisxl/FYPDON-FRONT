@@ -1,6 +1,6 @@
 import "./App.css";
 import HomePage from "./pages/HomePage";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -16,7 +16,9 @@ import OrderListPage from "./pages/OrderListPage";
 import ProductListPage from "./pages/ProductListPage";
 import ProductEditPage from "./pages/ProductEditPage";
 import { CartProvider } from "./context/CartContext";
+import ViewAllProducts from "./pages/ViewAllProducts";
 import Header from "./components/Layout/Header";
+import Chat from "./components/UI/Chat";
 function App() {
   return (
     <div className="App">
@@ -28,6 +30,8 @@ function App() {
             <Route>
               <Route element={<HomePage />} path="/" exact />
             </Route>
+            <Route element={<ViewAllProducts />} path="/allproducts" />
+
             <Route element={<LoginPage />} path="/login" />
             <Route element={<RegisterPage />} path="/register" />
             {/* <Route element={<ProductPage />} path="/product" /> */}

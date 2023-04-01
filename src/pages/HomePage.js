@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Header from "../components/Layout/Header";
 import Footer from "../components/Layout/Footer";
 import Body from "../components/Layout/Body";
-
+import Chat from "../components/UI/Chat";
 const HomePage = () => {
   let [notes, setNotes] = useState([]);
 
@@ -10,6 +10,7 @@ const HomePage = () => {
     <div>
       <Body />
       <Footer />
+      <Chat />
     </div>
   );
 };

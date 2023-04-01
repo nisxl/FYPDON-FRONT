@@ -109,21 +109,25 @@ function Body() {
         ) : error ? (
           <Message variant="danger">{error}</Message>
         ) : (
-          <div className="flex flex-wrap px-[90px] gap-12">
-            {bestSeller}
+          <div>
+            <div className="flex flex-wrap px-[160px] justify-around">
+              {bestSeller}
+            </div>
             <Paginate page={page} pages={pages} keyword={keyword} />
           </div>
         )}
       </section>
       <section className="flex flex-col items-center">
-        <Button
-          className="flex mt-5 items-center border-2 border-[#4A1D1F] bg-transparent text-[#4A1D1F] 
+        <Link to="allproducts">
+          <Button
+            className="flex mt-5 items-center border-2 border-[#4A1D1F] bg-transparent text-[#4A1D1F] 
         mb-[141px]"
-        >
-          <span className="mr-1">View More </span>
+          >
+            <span className="mr-1">View More </span>
 
-          <AiOutlineArrowRight size={20} />
-        </Button>
+            <AiOutlineArrowRight size={20} />
+          </Button>
+        </Link>
 
         <p className="text-[24px] text-[#4A1D1F] font-semibold">
           Cake Ordering we make it easy
