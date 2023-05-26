@@ -23,6 +23,10 @@ import {
   PRODUCT_TOP_REQUEST,
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
+  PRODUCT_RECOMMENDED_REQUEST,
+  PRODUCT_RECOMMENDED_SUCCESS,
+  PRODUCT_RECOMMENDED_FAIL,
+  SET_WEIGHT,
 } from "../constants/productConstants";
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -148,6 +152,63 @@ export const productTopRatedReducer = (state = { products: [] }, action) => {
 
     case PRODUCT_TOP_FAIL:
       return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+export const productRecommendedReducer = (state = { products: [] }, action) => {
+  switch (action.type) {
+    case PRODUCT_RECOMMENDED_REQUEST:
+      return { loading: true, products: [] };
+
+    case PRODUCT_RECOMMENDED_SUCCESS:
+      return { loading: false, products: action.payload };
+
+    case PRODUCT_RECOMMENDED_FAIL:
+      return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+// export const orderDetailsReducer = (
+//   state = { loading: true, orderItems: [], shippingAddress: {} },
+//   action
+// ) => {
+//   switch (action.type) {
+//     case ORDER_DETAILS_REQUEST:
+//       return {
+//         ...state,
+//         loading: true,
+//       };
+
+//     case ORDER_DETAILS_SUCCESS:
+//       return {
+//         loading: false,
+//         order: action.payload,
+//       };
+
+//     case ORDER_DETAILS_FAIL:
+//       return {
+//         loading: false,
+//         error: action.payload,
+//       };
+
+//     default:
+//       return state;
+//   }
+// };
+
+export const weightReducer = (state = { weight: 1 }, action) => {
+  switch (action.type) {
+    case SET_WEIGHT:
+      return {
+        ...state,
+        weight: action.payload,
+      };
 
     default:
       return state;

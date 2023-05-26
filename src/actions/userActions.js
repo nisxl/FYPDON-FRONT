@@ -29,6 +29,9 @@ import {
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
+  PASSWORD_RESET_REQUEST,
+  PASSWORD_RESET_SUCCESS,
+  PASSWORD_RESET_FAIL,
 } from "../constants/userConstant";
 
 import { ORDER_LIST_MY_RESET } from "../constants/orderConstants";
@@ -46,7 +49,7 @@ export const login = (email, password) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      "http://127.0.0.1:8000/api/token/",
+      "http://127.0.0.1:8000/api/users/login/",
       { username: email, password: password },
       config
     );
@@ -81,7 +84,7 @@ export const register = (name, email, password) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      "http://127.0.0.1:8000/api/users/register/",
+      "/api/users/register/",
       { name: name, email: email, password: password },
       config
     );
@@ -91,15 +94,85 @@ export const register = (name, email, password) => async (dispatch) => {
       payload: data,
     });
 
-    dispatch({
-      type: USER_LOGIN_SUCCESS,
-      payload: data,
-    });
+    // dispatch({
+    //     type: USER_LOGIN_SUCCESS,
+    //     payload: data,
+    // })
+
+    localStorage.setItem(
+      "registerMessage",
+      "Registration successful. Please check your email to activate your account."
+    );
 
     localStorage.setItem("userInfo", JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const confirmPasswordReset =
+  (uidb64, token, password) => async (dispatch) => {
+    try {
+      dispatch({
+        type: PASSWORD_RESET_REQUEST,
+      });
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+
+      console.log("data:", {
+        uidb64: uidb64,
+        token: token,
+        password: password,
+      });
+      await axios.post(
+        `/api/users/password-reset-confirm/${uidb64}/${token}/`,
+        { password: password },
+        config
+      );
+
+      dispatch({
+        type: PASSWORD_RESET_SUCCESS,
+      });
+    } catch (error) {
+      dispatch({
+        type: PASSWORD_RESET_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  };
+export const resetPassword = (email) => async (dispatch) => {
+  try {
+    dispatch({
+      type: PASSWORD_RESET_REQUEST,
+    });
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+
+    await axios.post("/api/users/password-reset/", { email }, config);
+
+    dispatch({
+      type: PASSWORD_RESET_SUCCESS,
+    });
+  } catch (error) {
+    dispatch({
+      type: PASSWORD_RESET_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

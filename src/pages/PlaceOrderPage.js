@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { useCart } from "../context/CartContext";
 import Message from "../components/UI/Message";
@@ -27,33 +27,14 @@ function PlaceOrderPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cart = useSelector((state) => state.cart);
-  // const [itemsPrice, setItemsPrice] = useState(0);
-  // const [shippingPrice, setShippingPrice] = useState(0);
-  // const [taxPrice, setTaxPrice] = useState(0);
-  // const [totalPrice, setTotalPrice] = useState(0);
 
-  // useEffect(() => {
-  //   setItemsPrice(
-  //     cart.cartItems
-  //       .reduce((acc, item) => acc + item.price * item.qty, 0)
-  //       .toFixed(2)
-  //   );
-  //   setShippingPrice((itemsPrice > 100 ? 0 : 10).toFixed(2));
-  //   setTaxPrice(Number(0.13 * itemsPrice).toFixed(2));
-  //   setTotalPrice(
-  //     Number(
-  //       Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)
-  //     ).toFixed(2)
-  //   );
-  // }, [cart.cartItems, itemsPrice, shippingPrice, taxPrice]);
-
-  const itemsPrice = cart.cartItems
+  cart.itemsPrice = cart.cartItems
     .reduce((acc, item) => acc + item.price * item.qty, 0)
     .toFixed(2);
-  const shippingPrice = (itemsPrice > 100 ? 0 : 10).toFixed(2);
-  const taxPrice = Number(0.13 * itemsPrice).toFixed(2);
-  const totalPrice = Number(
-    Number(itemsPrice) + Number(shippingPrice) + Number(taxPrice)
+  cart.shippingPrice = (cart.itemsPrice > 100 ? 0 : 10).toFixed(2);
+  cart.taxPrice = Number(0.13 * cart.itemsPrice).toFixed(2);
+  cart.totalPrice = Number(
+    Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)
   ).toFixed(2);
 
   if (!cart.paymentMethod) {
@@ -72,23 +53,23 @@ function PlaceOrderPage() {
         orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod,
-        itemsPrice,
-        shippingPrice,
-        taxPrice,
-        totalPrice,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
       })
     );
   };
 
   return (
-    <div>
+    <div className="mx-4">
       <CheckoutSteps step1 step2 step3 step4 />
       <Row>
         <Col md={8}>
           <ListGroup variatnt="flush">
             <ListGroup.Item>
               <h2>Shipping</h2>
-              <p>Shipping</p>
+              <p>shipping</p>
               {cart.shippingAddress.address}, {cart.shippingAddress.city}
               {"   "}
               {cart.shippingAddress.postalCode},{"   "}
@@ -97,8 +78,8 @@ function PlaceOrderPage() {
 
             <ListGroup.Item>
               <h2>Payment Method</h2>
-              <p>Method: </p>
-              {cart.paymentMethod}
+              <span>Method: </span>
+              <span>{cart.paymentMethod}</span>
             </ListGroup.Item>
 
             <ListGroup.Item>
@@ -125,7 +106,7 @@ function PlaceOrderPage() {
                         </Col>
 
                         <Col md={4}>
-                          {item.qty} X ${item.price} = $
+                          {item.qty} X Rs.{item.price} = Rs.
                           {(item.qty * item.price).toFixed(2)}
                         </Col>
                       </Row>
@@ -147,27 +128,27 @@ function PlaceOrderPage() {
               <ListGroup.Item>
                 <Row>
                   <Col>Items:</Col>
-                  <Col>${cart.itemsPrice}</Col>
+                  <Col>Rs. {cart.itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping:</Col>
-                  <Col>${cart.shippingPrice}</Col>
+                  <Col>Rs. {cart.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Tax:</Col>
-                  <Col>${cart.taxPrice}</Col>
+                  <Col>Rs. {cart.taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Total:</Col>
-                  <Col>${cart.totalPrice}</Col>
+                  <Col>Rs. {cart.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>

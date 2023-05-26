@@ -70,52 +70,63 @@ function ProfilePage() {
     }
   };
   return (
-    <Row>
+    <Row style={{ marginTop: 10, marginLeft: 20 }}>
       <Col md={3}>
-        <h2>USer profile</h2>
+        <h2>User Profile</h2>
 
-        <form
-          className="flex flex-col gap-[30px] my-[20px]"
-          onSubmit={submitHandler}
-        >
-          <input
-            className="w-[440px] shadow-in h-[45px] placeholder-[#4A1D1F] px-[30px]"
-            required
-            type="text"
-            placeholder="Name"
-            name="username"
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-          />
-          <input
-            className="w-[440px] shadow-in h-[45px] placeholder-[#4A1D1F] px-[30px]"
-            type="email"
-            placeholder="Email Address"
-            name="email"
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-          />
-          <input
-            className="w-[440px] shadow-in h-[45px] placeholder-[#4A1D1F] px-[30px]"
-            type="password"
-            placeholder="Password"
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          />
-          <input
-            className="w-[440px] shadow-in h-[45px] placeholder-[#4A1D1F] px-[30px]"
-            type="password"
-            placeholder="Confirm Password"
-            name="confirmPassword"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            value={confirmPassword}
-          />
-          {/* <Button className="w-[440px] h-[50px] bg-[#4A1D1F] text-white text-2xl rounded-[10px]"> */}
-          <Button>Update</Button>
-        </form>
+        {message && <Message variant="danger">{message}</Message>}
+        {error && <Message variant="danger">{error}</Message>}
+        {loading && <Loader />}
+        <Form onSubmit={submitHandler}>
+          <Form.Group controlId="name">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              required
+              type="name"
+              placeholder="Enter name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="email">
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control
+              required
+              type="email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="passwordConfirm">
+            <Form.Label>Confirm Password</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            ></Form.Control>
+          </Form.Group>
+          <div className="text-center mt-2">
+            <Button type="submit" variant="primary" className="w-[99%]">
+              Update
+            </Button>
+          </div>
+        </Form>
       </Col>
-      <Col md={9}>
+      <Col md={8} className="ml-auto mt-6">
         <h2>My Orders</h2>
 
         {loadingOrders ? (
@@ -136,7 +147,7 @@ function ProfilePage() {
             </thead>
             <tbody>
               {orders.map((order) => (
-                <t key={order._id}>
+                <tr key={order._id}>
                   <td>{order._id}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
                   <td>Rs.{order.totalPrice}</td>
@@ -153,7 +164,7 @@ function ProfilePage() {
                       <Button className="btn-sm">Details</Button>
                     </LinkContainer>
                   </td>
-                </t>
+                </tr>
               ))}
             </tbody>
           </Table>

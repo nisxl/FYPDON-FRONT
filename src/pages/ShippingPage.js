@@ -21,58 +21,93 @@ function ShippingPage() {
     navigate("/payment");
   };
   return (
-    <div>
-      <CheckoutSteps step1 step2 />
-      <h1>Shipping</h1>
-      <Form onSubmit={submitHandler}>
-        <Form.Group controlId="address">
-          <Form.Label>Address</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter address"
-            value={address ? address : ""}
-            onChange={(e) => setAddress(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <div className="mx-12 flex flex-col gap-6">
+        <CheckoutSteps step1 step2 />
+        <h1 className="self-center">Shipping</h1>
+        <div>
+          <Form
+            onSubmit={submitHandler}
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <Form.Group
+              style={{ width: "100%", margin: "10px 0 0 0" }}
+              controlId="address"
+            >
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                required
+                type="text"
+                placeholder="Enter address"
+                value={address ? address : ""}
+                onChange={(e) => setAddress(e.target.value)}
+                style={{ width: "100%" }}
+              />
+            </Form.Group>
 
-        <Form.Group controlId="city">
-          <Form.Label>city</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter city"
-            value={city ? city : ""}
-            onChange={(e) => setCity(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group
+              style={{ width: "100%", margin: "10px 0 0 0" }}
+              controlId="city"
+            >
+              <Form.Label>City</Form.Label>
+              <Form.Control
+                required
+                type="text"
+                placeholder="Enter city"
+                value={city ? city : ""}
+                onChange={(e) => setCity(e.target.value)}
+                style={{ width: "100%" }}
+              />
+            </Form.Group>
 
-        <Form.Group controlId="postalCode">
-          <Form.Label>postalCode</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter postal Code"
-            value={postalCode ? postalCode : ""}
-            onChange={(e) => setPostalCode(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group
+              style={{ width: "100%", margin: "10px 0 0 0" }}
+              controlId="postalCode"
+            >
+              <Form.Label>Postal Code</Form.Label>
+              <Form.Control
+                required
+                type="text"
+                placeholder="Enter postal code"
+                value={postalCode ? postalCode : ""}
+                onChange={(e) => setPostalCode(e.target.value)}
+                style={{ width: "100%" }}
+              />
+            </Form.Group>
 
-        <Form.Group controlId="country">
-          <Form.Label>Country</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Enter country"
-            value={country ? country : ""}
-            onChange={(e) => setCountry(e.target.value)}
-          ></Form.Control>
-        </Form.Group>
+            <Form.Group
+              style={{ width: "100%", margin: "10px 0 0 0" }}
+              controlId="country"
+            >
+              <Form.Label>Country</Form.Label>
+              <Form.Control
+                required
+                type="text"
+                placeholder="Enter country"
+                value={country ? country : ""}
+                onChange={(e) => setCountry(e.target.value)}
+                style={{ width: "100%" }}
+              />
+            </Form.Group>
 
-        <Button type="submit" variant="primary">
-          Continue
-        </Button>
-      </Form>
+            <Button
+              type="submit"
+              variant="primary"
+              className="mt-4"
+              style={{ width: "50%" }}
+            >
+              Continue
+            </Button>
+          </Form>
+        </div>
+      </div>
     </div>
   );
 }

@@ -5,10 +5,10 @@ import { Button } from "antd";
 
 function Footer() {
   return (
-    <section className="bg-[#FBEDCD] flex h-[265px]">
+    <section className="bg-[#FBEDCD] dark:bg-[#4A1D1F] flex h-[265px] dark:text-white">
       <div className="flex flex-col mt-[80px] px-[70px] items-center  ">
         <p className="font-semibold">Stay Connected</p>
-        <div className="flex gap-[14px] mb-[57px]">
+        <div className="flex gap-[14px] mb-[57px] text-white">
           <img src="../../images/instagram.png" className="w-[19px]" />
           <img src="../../images/facebook.png" className="w-[19px]" />
           <img src="../../images/tik-tok.png" className="w-[19px]" />

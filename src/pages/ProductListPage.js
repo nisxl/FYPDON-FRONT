@@ -77,10 +77,10 @@ function ProductListPage() {
     dispatch(createProduct());
   };
   return (
-    <div>
+    <div className="mx-[50px]">
       <Row className="align-items-center">
         <Col>
-          <h1>Products</h1>
+          <h1 className="mb-4">Products</h1>
         </Col>
         <Col className="text-right">
           <Button className="my-3" onClick={createProductHandler}>

@@ -21,6 +21,10 @@ import {
   PRODUCT_TOP_REQUEST,
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
+  PRODUCT_RECOMMENDED_REQUEST,
+  PRODUCT_RECOMMENDED_SUCCESS,
+  PRODUCT_RECOMMENDED_FAIL,
+  SET_WEIGHT,
 } from "../constants/productConstants";
 
 export const listProducts =
@@ -60,6 +64,66 @@ export const listTopProducts = () => async (dispatch) => {
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+// export const listRecommendedProducts = (userId) => async (dispatch) => {
+//   try {
+//     dispatch({ type: PRODUCT_RECOMMENDED_REQUEST });
+//     const { data } = await axios.get(
+//       `http://127.0.0.1:8000/api/products/recommended/${userId}`
+//     );
+//     dispatch({
+//       type: PRODUCT_RECOMMENDED_SUCCESS,
+//       payload: data,
+//     });
+//   } catch (error) {
+//     dispatch({
+//       type: PRODUCT_RECOMMENDED_FAIL,
+//       payload:
+//         error.response && error.response.data.message
+//           ? error.response.data.message
+//           : error.message,
+//     });
+//   }
+// };
+
+export const listRecommendedProducts = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: PRODUCT_RECOMMENDED_REQUEST,
+    });
+
+    // to get the value of the current user
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    // adding token  into the config in the header
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(
+      `http://127.0.0.1:8000/api/products/recommendation/`,
+      config
+    );
+
+    dispatch({
+      type: PRODUCT_RECOMMENDED_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_RECOMMENDED_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
           : error.message,
     });
   }
@@ -249,3 +313,9 @@ export const createProductReview =
       });
     }
   };
+export const setWeight = (weight) => {
+  return {
+    type: SET_WEIGHT,
+    payload: weight,
+  };
+};

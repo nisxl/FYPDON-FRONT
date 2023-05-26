@@ -9,10 +9,15 @@ import Recommended from "./Recommended";
 import Testimonial from "./Testimonial";
 import { useCart } from "../../context/CartContext";
 import ShoppingCart from "../Cart/shoppingCart";
-import { Button, Divider, notification, Space } from "antd";
+import { Button, Dropdown, Menu } from "antd";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listProducts } from "../../actions/productActions";
+
+import { LinkContainer } from "react-router-bootstrap";
+import NavDropdown from "react-bootstrap/NavDropdown";
+
+// gandu location best selling discount pricing flavors customizable pricing/lbs
 
 import ProductCarousel from "./ProductCarousel";
 
@@ -20,6 +25,7 @@ import Loader from "../UI/Loader";
 
 import Message from "../UI/Message";
 import Paginate from "../UI/Paginate";
+import SearchBox from "../UI/SearchBox";
 function Body() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,72 +39,58 @@ function Body() {
     dispatch(listProducts(keyword));
   }, [dispatch, keyword]);
 
-  const bestSeller = products.map((item, index) => {
-    return <BestSelling key={index} {...item} />;
-  });
-  const recommended = products.map((item, index) => {
-    return <Recommended key={index} {...item} />;
-  });
-  return (
-    //nav bar
-    <div>
-      {/* <Link to="/product" className="no-underline">
-        <p className="no-underline text-black mx-2 mt-2 h-[46px] cursor-pointer">
-          nischal
-        </p>
-      </Link> */}
-      {!keyword && <ProductCarousel />}
+  // const bestSeller = products.map((item, index) => {
+  //   return <BestSelling key={index} {...item} />;
+  // });
+  // const recommended = products.map((item, index) => {
+  //   return <Recommended key={index} {...item} />;
+  // });
 
-      <div
-        className="bg-slate-50 flex justify-between sticky top-0
-          items-center h-[64px]"
-      >
-        <div>
-          <img
-            className="h-[50px] w-[47px]"
-            src="../../images/rollers.jpg"
-            alt="nscihhal"
-          />
-        </div>
-        <div className="flex pr-10 gap-8">
-          <p className="cursor-pointer">Home</p>
-          <p className="cursor-pointer">Categories</p>
-          <p className="cursor-pointer">About Us</p>
-          <p className="cursor-pointer">Contact Us</p>
-          <Link to={"/profile"}>
-            <div className="cursor-pointer">
-              <FaRegUser />
-            </div>
-          </Link>
-          <div onClick={openCart} className="cursor-pointer">
-            <span>{cartQuantity}</span>
-            <BsCartCheck />
+  const menu = (
+    <Menu>
+      <Menu.Item key="1">
+        <Link to="/cakes">Cakes</Link>
+      </Menu.Item>
+      <Menu.Item key="2">Non Cakes</Menu.Item>
+    </Menu>
+  );
+
+  return (
+    <div className="dark:bg-black dark:text-white mt-[-2rem]">
+      {/* {!keyword && <ProductCarousel />} */}
+      <div className="flex">
+        <section className="flex flex-col gap-7 m-10">
+          <h1 className="text-[#4A1D1F] dark:text-[#FBEDCD] font-[600] text-3xl mt-[126px] dark:">
+            <p>Bring You Happiness</p> <p> through a piece of cake</p>
+          </h1>
+          <h2 className="font-[500] text-[17px] dark:text-white mt-[30px]">
+            We make Different type of cakes, chocolates, soft cookies,
+            cheesecake pies or anything you want.
+          </h2>
+          <SearchBox />
+          <div className="flex gap-3 mt-[7px] mb-[260px] z-0">
+            <Dropdown overlay={menu} placement="bottomLeft" arrow>
+              <Button className="bg-[#4A1D1F] text-white w-[114px]">
+                Categories
+              </Button>
+            </Dropdown>
+            <Button className="border-2 border-[#4A1D1F] dark:text-[#FBEDCD] bg-transparent text-[#4A1D1F]">
+              See All Menu
+            </Button>
           </div>
-        </div>
+        </section>
+        <img
+          src="../../images/birthdaycake.png"
+          className="h-[500px] mt-[50px] bg-"
+        />
       </div>
-      <section className="flex flex-col gap-7">
-        <h1 className="text-[#4A1D1F] font-[600] text-3xl mt-[126px]">
-          <p>Bring You Happiness</p> <p> through a piece of cake</p>
-        </h1>
-        <h2 className="font-[500] text-[20px] mt-[30px]">
-          We make Different type of cakes, chocolates, soft cookies, cheesecake
-          pies or anything you want.
-        </h2>
-        <div className="flex gap-3 mt-[7px] mb-[260px]">
-          <Button className="bg-[#4A1D1F] text-[#DAC6C7] w-[114px] ">
-            Order Now
-          </Button>
-          <Button className="border-2 border-[#4A1D1F] bg-transparent text-[#4A1D1F]">
-            See All Menu
-          </Button>
-        </div>
-      </section>
+
       <section>
         <div className="flex mb-10">
-          <div className="w-[35%]  flex justify-end pr-28 self-center text-[24px] font-semibold text-[#4A1D1F]">
+          <div className="w-[35%]  flex justify-end pr-28 self-center dark:text-[#FBEDCD] text-[24px] font-semibold text-[#4A1D1F]">
             Try Our Best Selling
           </div>
-          <p className="w-[65%] text-[16px] px-28 border-l-2  border-[#4A1D1F]">
+          <p className="w-[65%] text-[16px] px-28 border-l-2  border-[#4A1D1F] dark:border-[#FBEDCD]">
             Here’s our best creations that everyone loves. Lightness and
             sweetness of the cake make you want more and more. Start from cake,
             bread and other creations.{" "}
@@ -110,17 +102,16 @@ function Body() {
           <Message variant="danger">{error}</Message>
         ) : (
           <div>
-            <div className="flex flex-wrap px-[160px] justify-around">
-              {bestSeller}
-            </div>
-            <Paginate page={page} pages={pages} keyword={keyword} />
+            <BestSelling />
+            {/* {bestSeller} */}
+            {/* <Paginate page={page} pages={pages} keyword={keyword} /> */}
           </div>
         )}
       </section>
       <section className="flex flex-col items-center">
         <Link to="allproducts">
           <Button
-            className="flex mt-5 items-center border-2 border-[#4A1D1F] bg-transparent text-[#4A1D1F] 
+            className="flex mt-5 items-center border-2 border-[#4A1D1F] dark:text-[#FBEDCD] dark:border-[#FBEDCD] bg-transparent text-[#4A1D1F] 
         mb-[141px]"
           >
             <span className="mr-1">View More </span>
@@ -129,7 +120,7 @@ function Body() {
           </Button>
         </Link>
 
-        <p className="text-[24px] text-[#4A1D1F] font-semibold">
+        <p className="text-[24px] text-[#4A1D1F] dark:text-[#FBEDCD] font-semibold">
           Cake Ordering we make it easy
         </p>
         <p className="mt-[41px] text-[16px] font-semibold">
@@ -140,9 +131,21 @@ function Body() {
           Contact Us
         </Button>
       </section>
-      <div className="flex flex-wrap px-[90px] gap-12 bg-[#FBEDCD]">
+      {/* <div className="flex flex-wrap px-[160px] pt-8 bg-[#FBEDCD] dark:bg-[#4A1D1F] justify-around">
         {recommended}
-      </div>
+      </div> */}
+
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : (
+        <div className="bg-[#FBEDCD] dark:bg-[#4A1D1F]">
+          <Recommended />
+          {/* {bestSeller} */}
+          {/* <Paginate page={page} pages={pages} keyword={keyword} /> */}
+        </div>
+      )}
 
       <Testimonial />
     </div>

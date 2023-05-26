@@ -19,98 +19,35 @@ const RegisterPage = (location) => {
   const userRegister = useSelector((state) => state.userRegister);
 
   const { error, loading, userInfo } = userRegister;
+  const [registerMessage, setRegisterMessage] = useState("");
 
   useEffect(() => {
     if (userInfo) {
       navigate(redirect);
     }
+    if (localStorage.getItem("registerMessage")) {
+      setRegisterMessage(localStorage.getItem("registerMessage"));
+      localStorage.removeItem("registerMessage");
+    }
   }, [navigate, userInfo, redirect]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (password != confirmPassword) {
+    if (password !== confirmPassword) {
       setMessage("Password doesnt match");
     } else {
       dispatch(register(name, email, password));
-      // navigate("/login");
+      navigate("/login");
     }
   };
   return (
-    // <div className="flex justify-between">
-    //   <img
-    //     src={require("../image/fyp2.jpeg")}
-    //     alt="login"
-    //     className="w-[854px] h-screen"
-    //   />
-    //   <div className="p-7 w-full my-auto space-y-[100px]">
-    //     <h1 className="text-3xl font-black text-center">GharSewa</h1>
-    //     <div>
-    //       <p className="text-zinc-400 font-thin text-center">
-    //         Welcome to GharSewa
-    //       </p>
-
-    //       {/* <form onSubmit={(e) => loginUser(e)}> */}
-    //       <form onSubmit={submitHandler}>
-    //         <div className="flex flex-col p-[20px] space-y-[20px]">
-    //           <label>Name</label>
-    //           <input
-    //             required
-    //             type="text"
-    //             name="username"
-    //             value={name}
-    //             // placeholder="Enter username"
-    //             onChange={(e) => setName(e.target.value)}
-    //             className="border-b-2 h-[40px]"
-    //           />
-    //           <label>Email</label>
-    //           <input
-    //             required
-    //             type="text"
-    //             name="username"
-    //             // placeholder="Enter username"
-    //             value={email}
-    //             onChange={(e) => setEmail(e.target.value)}
-    //             className="border-b-2 h-[40px]"
-    //           />
-    //           <label>Password</label>
-    //           <input
-    //             required
-    //             type="password"
-    //             name="password"
-    //             value={password}
-    //             onChange={(e) => setPassword(e.target.value)}
-    //             // placeholder="Enter password"
-    //             className="border-b-2 h-[40px]"
-    //           />
-    //           <label>Confirm Password</label>
-    //           <input
-    //             required
-    //             type="password"
-    //             name="confirm password"
-    //             value={confirmPassword}
-    //             onChange={(e) => setConfirmPassword(e.target.value)}
-    //             // placeholder="Enter password"
-    //             className="border-b-2 h-[40px]"
-    //           />
-
-    //           <button className="bg-slate-700 w-[180px] h-[40px] text-white rounded-[15px] mx-auto">
-    //             Register
-    //           </button>
-    //         </div>
-    //       </form>
-    //     </div>
-    //     <p className="text-center text-zinc-400 font-thin">
-    //       Have an Account?
-    //       <u>
-    //         <Link to={redirect ? ` /login?redirect=${redirect}` : "/login"}>
-    //           Sign In
-    //         </Link>
-    //       </u>
-    //     </p>
-    //   </div>
-    // </div>
-
-    <div className="pt-[80px] h-[100vh] text-[#4A1D1F] bg-[#F4F4F2] 2xl:px-[8vw]">
+    <div className="h-[100vh] text-[#4A1D1F] flex bg-[#F4F4F2]">
+      <div className="">
+        <img
+          src="../images/pasteries.jpg"
+          className="h-[100%] w-[50vw] object-cover"
+        />
+      </div>
       <div className="flex items-center justify-center justify-items-start flex-col gap-[20px] px-[6vw]"></div>
       <div className="flex flex-col items-center justify-center gap-[20px]">
         <h2 className="text-5xl font-semibold ">Register</h2>
@@ -151,15 +88,16 @@ const RegisterPage = (location) => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             value={confirmPassword}
           />
-          <button className="w-[440px] h-[50px] bg-[#4A1D1F] text-white text-2xl rounded-[10px]">
-            Sign up
+          <button className="w-[440px] h-[50px] bg-[#4A1D1F] flex justify-center items-center text-white text-2xl rounded-[10px]">
+            REGISTER
           </button>
         </form>
         <p>Forgot password?</p>
         <p className="text-center text-zinc-400 font-thin">
           Have an Account?
           <u>
-            <Link to={redirect ? ` /login?redirect=${redirect}` : "/login"}>
+            <Link to={"/login"}>
+              {/* <Link to={redirect ? ` /login?redirect=${redirect}` : "/login"}> */}
               Sign In
             </Link>
           </u>

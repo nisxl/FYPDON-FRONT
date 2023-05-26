@@ -10,6 +10,8 @@ import {
   productUpdateReducer,
   productReviewCreateReducer,
   productTopRatedReducer,
+  productRecommendedReducer,
+  weightReducer,
 } from "./reducers/productReducer";
 
 import {
@@ -20,6 +22,7 @@ import {
   userListReducer,
   userDeleteReducer,
   userUpdateReducer,
+  passwordResetReducer,
 } from "./reducers/userReducer";
 import { configureStore } from "@reduxjs/toolkit";
 import {
@@ -39,6 +42,9 @@ const reducer = combineReducers({
   productUpdate: productUpdateReducer,
   productReviewCreate: productReviewCreateReducer,
   productTopRated: productTopRatedReducer,
+  productRecommended: productRecommendedReducer,
+  weighter: weightReducer,
+  passwordReset: passwordResetReducer,
 
   cart: cartReducer,
   userLogin: userLoginReducer,

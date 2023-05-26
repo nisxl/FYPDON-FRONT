@@ -27,8 +27,8 @@ function OrderListPage() {
   }, [dispatch, navigate, userInfo]);
 
   return (
-    <div>
-      <h1>ORDERS</h1>
+    <div className="mx-[50px] mt-6">
+      <h1 className="mb-4">ORDERS</h1>
       {loading ? (
         <Loader />
       ) : error ? (

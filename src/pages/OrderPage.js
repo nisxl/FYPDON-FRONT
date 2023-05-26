@@ -3,6 +3,9 @@ import { useCart } from "../context/CartContext";
 import Message from "../components/UI/Message";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import KhaltiCheckout from "khalti-checkout-web";
+import config from "../components/Khalti/KhaltiConfig";
+
 import {
   createOrder,
   getOrderDetails,
@@ -31,6 +34,8 @@ function OrderPage() {
 
   const [sdkReady, setSdkReady] = useState(false);
 
+  const [khaltiReady, setKhaltiReady] = useState(true);
+
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, error, loading } = orderDetails;
 
@@ -51,31 +56,60 @@ function OrderPage() {
       .toFixed(2);
   }
 
-  // const addPayPalScript = () => {
-  //   const script = document.createElement('script')
-  //   script.type = 'text/javascript'
-  //   script.src=
-  // }
+  const addKhaltiScript = () => {
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://khalti.com/static/khalti-checkout.js";
+    script.async = true;
+    script.onload = () => {
+      setKhaltiReady(true);
+    };
+    document.body.appendChild(script);
+  };
+
+  let checkout = new KhaltiCheckout(config(dispatch, orderId, order));
 
   useEffect(() => {
     if (!userInfo) {
       navigate("/login");
     }
-    if (!order || order._id !== Number(orderId)) {
+    if (
+      !order ||
+      successPay ||
+      order._id !== Number(orderId) ||
+      successDeliver
+    ) {
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
+    } else if (!order.isPaid) {
+      if (!window.khalti) {
+        addKhaltiScript();
+      }
     }
-  }, [dispatch, order, orderId]);
+  }, [
+    dispatch,
+    order,
+    orderId,
+    successPay,
+    successDeliver,
+    navigate,
+    userInfo,
+  ]);
 
   const deliverHandler = () => {
     dispatch(deliverOrder(order));
   };
 
+  const paidHandler = (paymentResult) => {
+    dispatch(payOrder(order._id, paymentResult));
+  };
   return loading ? (
     <Loader />
   ) : error ? (
     <Message variant="danger">{error}</Message>
   ) : (
-    <div>
+    <div className="">
       <h1>Order: {order._id}</h1>
 
       <Row>
@@ -145,7 +179,7 @@ function OrderPage() {
                         </Col>
 
                         <Col md={4}>
-                          {item.qty} X ${item.price} = $
+                          {item.qty} X Rs. {item.price} = Rs.
                           {(item.qty * item.price).toFixed(2)}
                         </Col>
                       </Row>
@@ -167,31 +201,70 @@ function OrderPage() {
               <ListGroup.Item>
                 <Row>
                   <Col>Items:</Col>
-                  <Col>${order.itemsPrice}</Col>
+                  <Col>Rs. {order.itemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping:</Col>
-                  <Col>${order.shippingPrice}</Col>
+                  <Col>Rs. {order.shippingPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Tax:</Col>
-                  <Col>${order.taxPrice}</Col>
+                  <Col>Rs. {order.taxPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Total:</Col>
-                  <Col>${order.totalPrice}</Col>
+                  <Col>Rs. {order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
+
+              {!order.isPaid && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+
+                  {khaltiReady && order.paymentMethod === "Khalti" ? (
+                    <div className="d-grid gap-2">
+                      <Button
+                        type="button"
+                        disabled={loadingPay}
+                        amount={order.totalPrice}
+                        onClick={() =>
+                          checkout.show({ amount: order.totalPrice * 100 })
+                        }
+                      >
+                        Pay with Khalti
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="center">
+                      <h5>Proceed with cash</h5>
+                    </div>
+                  )}
+                </ListGroup.Item>
+              )}
             </ListGroup>
             {loadingDeliver && <Loader />}
+
+            {userInfo &&
+              userInfo.isAdmin &&
+              order.paymentMethod != "Khalti" &&
+              !order.isDelivered && (
+                <ListGroup.Item
+                  type="button"
+                  className="btn btn-block"
+                  onClick={paidHandler}
+                >
+                  <Button>Mark as Paid</Button>
+                </ListGroup.Item>
+              )}
+
             {userInfo &&
               userInfo.isAdmin &&
               order.isPaid &&

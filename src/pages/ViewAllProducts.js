@@ -39,16 +39,13 @@ function ViewAllProducts() {
         <Message variant="danger">{error}</Message>
       ) : (
         <div>
-          <div className="flex flex-wrap px-[140px]">{bestSeller}</div>
+          <div className="flex flex-wrap px-[160px] justify-around">
+            {bestSeller}
+          </div>
           <Paginate page={page} pages={pages} keyword={keyword} />
         </div>
       )}
-      <section className="flex flex-col items-center">
-        <Button className="flex mt-5 items-center border-2 border-[#4A1D1F] bg-transparent text-[#4A1D1F] mb-[141px]">
-          <span className="mr-1">View More </span>
-          <AiOutlineArrowRight size={20} />
-        </Button>
-      </section>
+      <section className="flex flex-col items-center"></section>
     </div>
   );
 }

@@ -34,8 +34,8 @@ function UserListPage() {
     }
   };
   return (
-    <div>
-      <h1>USERS</h1>
+    <div className="mx-[50px]">
+      <h1 className="mb-4">USERS</h1>
       {loading ? (
         <Loader />
       ) : error ? (

@@ -101,7 +101,7 @@ function ProductEditPage() {
   };
 
   return (
-    <div className="pt-[80px] h-[100vh] text-[#4A1D1F] bg-[#F4F4F2] 2xl:px-[8vw]">
+    <div className="pt-[80px]  text-[#4A1D1F] bg-[#F4F4F2] 2xl:px-[8vw]">
       <Link to="/admin/productlist">Go Back</Link>
       <div className="flex items-center justify-center justify-items-start flex-col gap-[20px] px-[6vw]"></div>
       <div className="flex flex-col items-center justify-center gap-[20px]">

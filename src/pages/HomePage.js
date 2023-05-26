@@ -10,7 +10,7 @@ const HomePage = () => {
     <div>
       <Body />
       <Footer />
-      <Chat />
+      {/* <Chat /> */}
     </div>
   );
 };

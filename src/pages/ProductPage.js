@@ -2,23 +2,28 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { Form, Col, Row, ListGroup, Button } from "react-bootstrap";
-import { DownOutlined } from "@ant-design/icons";
-import { Dropdown, Space } from "antd";
+
 import { SEED } from "../env";
 import { useDispatch, useSelector } from "react-redux";
+import { Rate, Select } from "antd";
 import {
   listProductDetails,
   createProductReview,
+  setWeight,
 } from "../actions/productActions";
 import Loader from "../components/UI/Loader";
 import Message from "../components/UI/Message";
 import { useParams, useNavigate } from "react-router-dom";
 import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants";
+import Rating from "../components/UI/Rating";
 function ProductPage() {
   const navigate = useNavigate();
   const [qty, setQty] = useState(1);
+
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [defWt, setDefWt] = useState(true);
+  const [defQt, setDefQt] = useState(true);
   const { increaseCartQuantity, decreaseCartQuantity, getItemQuantity } =
     useCart();
   const { id } = useParams();
@@ -46,39 +51,43 @@ function ProductPage() {
 
     dispatch(listProductDetails(idNum));
   }, [dispatch, idNum, successProductReview]);
+  // const weight = useSelector((state) => state);
+  const weighter = useSelector((state) => state.weighter);
+  const { weight } = weighter;
+  // const [weight, setWeight] = useState(product.min_weight);
 
-  const addToCartHandler = () => {
-    navigate(`/cart/${idNum}?qty=${qty}`);
-  };
+  useEffect(() => {
+    dispatch(setWeight(product.min_weight));
+  }, [dispatch, product.min_weight]);
 
-  const [weight, setWeight] = useState("1 lbs");
   const [productDesc, setProdDesc] = useState(true);
-  const items = [
-    {
-      label: <p onClick={() => setWeight(2)}>2 lbs</p>,
-      key: "0",
-    },
-    {
-      label: <p onClick={() => setWeight(3)}>3 lbs</p>,
-      key: "1",
-    },
-    {
-      type: "divider",
-    },
-  ];
 
   const location = useLocation();
   const rat = [1, 2, 3, 4, 5];
   // const item = product.find((i) => i._id === idNum);
   // const quantity = getItemQuantity(product._id);
 
+  const handleWeightChange = (e) => {
+    const newWeight = e.target.value;
+    dispatch(setWeight(newWeight));
+  };
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(createProductReview(idNum, { rating, comment }));
   };
+
+  const addToCartHandler = () => {
+    // navigate(`/cart/${idNum}?qty=${qty}`);
+    navigate(`/cart/${idNum}?qty=${qty}&weight=${weight}`);
+  };
+  console.log(product.price);
+  console.log(qty);
+
+  console.log("weight", weight);
+
   return (
     <div>
-      <div key={idNum}>
+      <div key={product._id}>
         {loading ? (
           <Loader />
         ) : error ? (
@@ -86,122 +95,144 @@ function ProductPage() {
         ) : (
           <div className="flex gap-[140px]">
             <img
-              key={idNum}
+              key={product._id}
               src={`${SEED}${product.image}`}
               className="ml-[120px] w-[400px] h-[450px]"
               alt="nischal"
             />
             <div className="flex flex-col mt-3 mr-[140px] font-bold">
               <p className="text-[32px] font-bold">{product.name}</p>
-              <div className="flex gap-5">
-                <div className="flex items-center">
-                  <div className="flex gap-2 mb-3 mt-[20px] pr-4 border-r-2">
-                    {rat.map((rating, i) => {
-                      return rating <= Math.floor(product.rating) ? (
-                        <img
-                          src="../images/star.png"
-                          className="h-[19px] w-[19px]"
-                        />
-                      ) : (Math.abs(product.rating - rating) > 0.25) &
-                        (Math.abs(product.rating - rating) < 0.76) ? (
-                        <img
-                          src="../images/starHalf.png"
-                          className="h-[19px] w-[19px]"
-                        />
-                      ) : Math.abs(rating - product.rating) < 0.25 ? (
-                        <img
-                          src="../images/star.png"
-                          className="h-[19px] w-[19px]"
-                        />
-                      ) : (
-                        <img
-                          src="../images/starEmpty.png"
-                          className="h-[19px] w-[19px]"
-                        />
-                      );
-                    })}
 
-                    <span>{product.rating}</span>
+              <div className="flex items-center">
+                <div className="flex gap-2 items-center mb-3 mt-[20px] ">
+                  <Rating value={product.rating} />
+
+                  <span className="border-r-2  pr-3">({product.rating})</span>
+                  <div className="pl-3">
+                    <span>{product.numReviews}</span>
                   </div>
-                  <div className="flex pl-4 gap-24 items-center">
-                    <span>15 reviews</span>
-                    <img
-                      src="../images/fav.png"
-                      className="w-[19px] h-[19px]"
-                    />
-                  </div>
+                </div>
+                <div className="flex pl-4 gap-24 items-center">
+                  <ion-icon name="heart-outline"></ion-icon>
                 </div>
               </div>
-              <div className="flex items-center justify-between mt-[60px]">
-                <div className="ml-28">
-                  <p>Weight</p>
-                  <Dropdown
-                    menu={{
-                      items,
-                    }}
-                    trigger={["click"]}
-                  >
-                    <Button onClick={(e) => e.preventDefault()}>
-                      <Space>
-                        {weight}
-                        <DownOutlined />
-                      </Space>
-                    </Button>
-                  </Dropdown>
+              {product.is_cake ? (
+                <div className="mt-9">
+                  <span className="text-[20px] text-[#4A1D1F]">
+                    Base Rate:{" "}
+                  </span>
+                  Rs.{" "}
+                  {(
+                    (product.min_weight * product.price) /
+                    product.min_weight
+                  ).toFixed(2)}
+                  /{product.min_weight} lbs
                 </div>
-                <div className="flex flex-col mr-28 gap-[15.8px]">
-                  <div>Quantity</div>
-                  <div className="flex py-1 border border-black rounded-md">
-                    <div className="flex text-black gap-2 text-[14px]">
-                      <span
-                        className="border-r px-2 cursor-pointer"
-                        onClick={() => decreaseCartQuantity(product.id)}
-                      >
-                        -
-                      </span>
-                      {/* <span>{quantity}</span> */}
-                      <span
-                        className="px-2 border-l cursor-pointer"
-                        onClick={() => increaseCartQuantity(product.id)}
-                      >
-                        +
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {product.countInStock > 0 && (
-                <div>
-                  qty
-                  <Form.Control
-                    as="select"
-                    value={qty}
-                    onChange={(e) => setQty(e.target.value)}
-                  >
-                    {[...Array(product.countInStock).keys()].map((x) => (
-                      <option key={x + 1} value={x + 1}>
-                        {x + 1}
-                      </option>
-                    ))}
-                  </Form.Control>
+              ) : (
+                <div className="mt-9">
+                  <span className="text-[20px] text-[#4A1D1F]">Rate: </span>
+                  Rs. {product.price}
                 </div>
               )}
-              <div className="flex justify-center">
-                <div
-                  className="flex justify-center mt-[80px] w-[200px] bg-[#4A1D1F] rounded-full py-[6px] text-white cursor-pointer"
-                  onClick={addToCartHandler}
-                >
-                  Add to Cart
+              {(qty !== 1 || weight !== product.min_weight) &&
+                product.is_cake && (
+                  <div className="mt-9">
+                    <span className="text-[20px] text-[#4A1D1F]">Price: </span>
+                    Rs.{" "}
+                    {(
+                      (weight * product.price * Number(qty)) /
+                      product.min_weight
+                    ).toFixed(2)}
+                    /{weight} lbs
+                    <span className="text-[12px] font-extralight ml-2">
+                      x{qty}
+                    </span>
+                  </div>
+                )}
+
+              {qty !== 1 && !product.is_cake && (
+                <div className="mt-9">
+                  <span className="text-[20px] text-[#4A1D1F]">Price: </span>
+                  Rs. {(product.price * Number(qty)).toFixed(2)}
+                  <span className="text-[12px] font-extralight ml-2">
+                    x{qty}
+                  </span>
                 </div>
+              )}
+
+              <div className="flex items-center justify-between mt-[60px] mx-5">
+                {product.is_cake && (
+                  <div>
+                    <span>Weight</span>
+                    <div>
+                      <Select
+                        value={weight}
+                        onChange={(value) => {
+                          const newWeight = Number(value);
+                          dispatch(setWeight(newWeight));
+                        }}
+                      >
+                        {[
+                          ...Array(
+                            product.max_weight - product.min_weight + 1
+                          ).keys(),
+                        ].map((x) => (
+                          <Select.Option
+                            key={product.max_weight + x}
+                            value={product.min_weight + x}
+                          >
+                            {product.min_weight + x}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
+                )}
+                {product.countInStock > 0 && (
+                  <div>
+                    Quantity
+                    <div>
+                      <Select
+                        value={qty}
+                        onChange={(value) => {
+                          setQty(Number(value));
+                          setDefQt(false);
+                        }}
+                      >
+                        {[...Array(product.countInStock).keys()].map((x) => (
+                          <Select.Option key={x + 1} value={x + 1}>
+                            {x + 1}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="flex justify-center">
+                {product.countInStock > 0 ? (
+                  <div
+                    className="flex justify-center mt-[80px] w-[200px] bg-[#4A1D1F] rounded-full py-[6px] text-white cursor-pointer"
+                    onClick={addToCartHandler}
+                  >
+                    Add to Cart
+                  </div>
+                ) : (
+                  <p className="text-center text-red-500 font-bold">
+                    Out of Stock
+                  </p>
+                )}
               </div>
               <p className="text-[14px] font-light mt-6">
                 Order Directly from Messenger: Send Message
               </p>
-              <p className="p-2 text-[12px] font-light bg-[#FBEDCD]">
-                This cake requires at least 3 lb(s). The price shown above is
-                per lb in base options. The final price might change based on
-                the options you choose.
-              </p>
+              {product.is_cake && (
+                <p className="p-2 text-[12px] font-light bg-[#FBEDCD]">
+                  This cake requires at least {product.min_weight} lb(s). The
+                  price shown above is per lb in base options. The final price
+                  might change based on the options you choose.
+                </p>
+              )}
 
               {productDesc ? (
                 <div className="flex">
@@ -257,77 +288,84 @@ function ProductPage() {
         )}
       </div>
 
-      <div>
+      <div className="mt-[50px] ml-[120px]">
         <Row>
           <Col md={6}>
-            <h4>Reviews</h4>
-            {product.reviews.length === 0 && (
-              <Message variant="info">No Reviews</Message>
-            )}
-            <ListGroup variant="flush">
-              {product.reviews.map((review) => (
-                <ListGroup.Item key={review._id}>
-                  <strong>{review.name}</strong>
-                  {/* <Rating value={review.rating} colors="#f8e825" /> */}
+            <div className="reviews-container">
+              <h4 className="reviews-heading">Reviews</h4>
+              {product.reviews.length === 0 && (
+                <Message variant="info">No Reviews</Message>
+              )}
+              <ListGroup variant="flush">
+                {product.reviews.map((review) => (
+                  <ListGroup.Item key={review._id}>
+                    <div className="review-item">
+                      <strong>{review.name}</strong>
+                      <Rating value={review.rating} />
 
-                  <p>{review.createdAt.substring(0, 10)}</p>
-                  <p>{review.comment}</p>
+                      <p className="review-date">
+                        {review.createdAt.substring(0, 10)}
+                      </p>
+                      <p className="review-comment">{review.comment}</p>
+                    </div>
+                  </ListGroup.Item>
+                ))}
+
+                <ListGroup.Item>
+                  <div
+                    className="write-review "
+                    style={{ border: "1px solid #ccc", padding: "1rem" }}
+                  >
+                    <h4 className="write-review-heading">Write a review</h4>
+                    {loadingProductReview && <Loader />}
+                    {successProductReview && (
+                      <Message variant="success">Review Submitted</Message>
+                    )}
+
+                    {errorProductReview && (
+                      <Message variant="danger">{errorProductReview}</Message>
+                    )}
+                    {userInfo ? (
+                      <Form onSubmit={submitHandler}>
+                        <div className="flex flex-col">
+                          <Rate value={rating} onChange={setRating} />
+
+                          <Form.Group controlId="comment">
+                            <Form.Label>Review</Form.Label>
+                            <Form.Control
+                              as="textarea"
+                              rows={7}
+                              value={comment}
+                              onChange={(e) => setComment(e.target.value)}
+                              className="review-textarea"
+                            ></Form.Control>
+                          </Form.Group>
+                          <Row>
+                            <Col md={{ span: 6, offset: 6 }}>
+                              <Button
+                                style={{
+                                  backgroundColor: "#4A1D1F",
+                                }}
+                                className="submit-review-btn"
+                                disabled={loadingProductReview}
+                                type="submit"
+                                variant="primary"
+                              >
+                                Submit
+                              </Button>
+                            </Col>
+                          </Row>
+                        </div>
+                      </Form>
+                    ) : (
+                      <Message variant="info">
+                        Please <Link to="/login">Login</Link> to write a review
+                      </Message>
+                    )}
+                  </div>
                 </ListGroup.Item>
-              ))}
-
-              <ListGroup.Item>
-                <h4>Write a review</h4>
-                {loadingProductReview && <Loader />}
-                {successProductReview && (
-                  <Message variant="success">Review Submitted</Message>
-                )}
-
-                {errorProductReview && (
-                  <Message variant="danger">{errorProductReview}</Message>
-                )}
-                {userInfo ? (
-                  <Form onSubmit={submitHandler}>
-                    <Form.Group controlId="rating">
-                      <Form.Label>Rating</Form.Label>
-                      <Form.Control
-                        as="select"
-                        value={rating}
-                        onChange={(e) => setRating(e.target.value)}
-                      >
-                        <option value="">Select...</option>
-                        <option value="1">1 - Poor</option>
-                        <option value="2">2 - Fair</option>
-                        <option value="3">3 - Good</option>
-                        <option value="4">4 - Very Good</option>
-                        <option value="5">5 - Excellent</option>
-                      </Form.Control>
-                    </Form.Group>
-
-                    <Form.Group controlId="comment">
-                      <Form.Label>Review</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        row="5"
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                      ></Form.Control>
-                    </Form.Group>
-                    <Button
-                      className="bg-green"
-                      disabled={loadingProductReview}
-                      type="submit"
-                      variant="primary"
-                    >
-                      Submit
-                    </Button>
-                  </Form>
-                ) : (
-                  <Message variant="info">
-                    Please <Link to="/login">Login</Link> to write a review
-                  </Message>
-                )}
-              </ListGroup.Item>
-            </ListGroup>
+              </ListGroup>
+            </div>
           </Col>
         </Row>
       </div>
